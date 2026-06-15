@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Screening Results &mdash; Resume Screening Assistant{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Screening Results</h1>
+  <p>Candidates ranked by overall match score. Click a candidate to view the full ATS report.</p>
+  <a href="{{ url_for('upload') }}" class="btn btn-outline">&#43; New Analysis</a>
+</div>
+
+{% if candidates %}
+<div class="results-summary">
+  <div class="summary-card">
+    <div class="summary-number">{{ candidates | length }}</div>
+    <div class="summary-label">Candidates</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-number">
+      {{ candidates | selectattr('recommendation', 'equalto', 'Strong Match') | list | length }}
+    </div>
+    <div class="summary-label">Strong Matches</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-number">
+      {{ candidates | selectattr('recommendation', 'equalto', 'Good Match') | list | length }}
+    </div>
+    <div class="summary-label">Good Matches</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-number">
+      {% if candidates %}{{ "%.1f"|format(candidates[0].overall_score) }}%{% else %}0%{% endif %}
+    </div>
+    <div class="summary-label">Top Score</div>
+  </div>
+</div>
+
+<div class="table-container">
+  <table class="results-table">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Candidate</th>
+        <th>Keyword</th>
+        <th>Skill</th>
+        <th>Similarity</th>
+        <th>ATS</th>
+        <th>Overall</th>
+        <th>Status</th>
+        <th>Report</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in candidates %}
+      <tr>
+        <td>
+          <span class="rank-badge rank-{{ c.rank }}">{{ c.rank }}</span>
+        </td>
+        <td class="candidate-name">{{ c.filename }}</td>
+        <td>
+          <div class="score-cell">
+            <span class="score-value">{{ "%.1f"|format(c.keyword_score) }}%</span>
+            <div class="mini-bar"><div class="mini-bar-fill" style="width:{{ c.keyword_score }}%"></div></div>
+          </div>
+        </td>
+        <td>
+          <div class="score-cell">
+            <span class="score-value">{{ "%.1f"|format(c.skill_score) }}%</span>
+            <div class="mini-bar"><div class="mini-bar-fill" style="width:{{ c.skill_score }}%"></div></div>
+          </div>
+        </td>
+        <td>
+          <div class="score-cell">
+            <span class="score-value">{{ "%.1f"|format(c.tfidf_score) }}%</span>
+            <div class="mini-bar"><div class="mini-bar-fill" style="width:{{ c.tfidf_score }}%"></div></div>
+          </div>
+        </td>
+        <td>
+          <div class="score-cell">
+            <span class="score-value">{{ "%.1f"|format(c.ats_score) }}%</span>
+            <div class="mini-bar"><div class="mini-bar-fill" style="width:{{ c.ats_score }}%"></div></div>
+          </div>
+        </td>
+        <td>
+          <span class="overall-score">{{ "%.1f"|format(c.overall_score) }}%</span>
+        </td>
+        <td>
+          <span class="badge badge-{{ c.recommendation | lower | replace(' ', '-') }}">
+            {{ c.recommendation }}
+          </span>
+        </td>
+        <td>
+          <a href="{{ url_for('report', candidate_id=c.id) }}" class="btn btn-sm btn-primary">
+            View Report
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="legend">
+  <h3>Recommendation Legend</h3>
+  <div class="legend-items">
+    <span class="badge badge-strong-match">Strong Match</span> &ge; 75%
+    &nbsp;&nbsp;
+    <span class="badge badge-good-match">Good Match</span> &ge; 55%
+    &nbsp;&nbsp;
+    <span class="badge badge-moderate-match">Moderate Match</span> &ge; 35%
+    &nbsp;&nbsp;
+    <span class="badge badge-low-match">Low Match</span> &lt; 35%
+  </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">&#128202;</div>
+  <h2>No Results Yet</h2>
+  <p>Upload and analyze resumes to see ranked candidates here.</p>
+  <a href="{{ url_for('upload') }}" class="btn btn-primary">Upload Resumes</a>
+</div>
+{% endif %}
+{% endblock %}

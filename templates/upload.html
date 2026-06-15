@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Upload Resumes &mdash; Resume Screening Assistant{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Upload & Analyze Resumes</h1>
+  <p>Upload one or more resumes and provide the job description to begin screening.</p>
+</div>
+
+<div class="upload-container">
+  <form id="upload-form" action="{{ url_for('analyze') }}" method="POST" enctype="multipart/form-data">
+
+    <div class="form-section">
+      <h2 class="form-section-title">&#128196; Resume Files</h2>
+      <div class="drop-zone" id="drop-zone">
+        <div class="drop-zone-icon">&#128196;</div>
+        <p class="drop-zone-text">Drag &amp; drop resumes here, or click to browse</p>
+        <p class="drop-zone-hint">Supported formats: PDF, DOCX, TXT &mdash; Max 16 MB per file</p>
+        <input
+          type="file"
+          id="resumes"
+          name="resumes"
+          multiple
+          accept=".pdf,.docx,.txt"
+          class="file-input"
+        />
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('resumes').click()">
+          Choose Files
+        </button>
+      </div>
+      <div id="file-list" class="file-list"></div>
+    </div>
+
+    <div class="form-section">
+      <h2 class="form-section-title">&#128221; Job Description</h2>
+      <label for="job_description" class="form-label">
+        Paste the full job description below. Include required skills, responsibilities, and qualifications.
+      </label>
+      <textarea
+        id="job_description"
+        name="job_description"
+        rows="12"
+        class="form-textarea"
+        placeholder="Example:&#10;We are looking for a Python Developer with 3+ years of experience in Flask and Django...&#10;Required Skills: Python, REST APIs, SQL, Docker, Git..."
+        required
+      ></textarea>
+      <div class="textarea-meta" id="jd-word-count">0 words</div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">
+        <span id="submit-text">&#9658; Analyze Resumes</span>
+        <span id="submit-loading" style="display:none;">&#9203; Analyzing...</span>
+      </button>
+      <a href="{{ url_for('index') }}" class="btn btn-outline btn-lg">Cancel</a>
+    </div>
+
+  </form>
+</div>
+{% endblock %}

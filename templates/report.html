@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}ATS Report &mdash; {{ report.filename }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <a href="{{ url_for('results') }}" class="btn btn-outline btn-sm">&larr; Back to Results</a>
+  <h1>ATS Compatibility Report</h1>
+  <p class="candidate-file">&#128196; {{ report.filename }}</p>
+</div>
+
+<div class="report-grid">
+
+  <!-- Score Overview -->
+  <div class="report-card score-overview">
+    <h2>Score Overview</h2>
+    <div class="overall-ring">
+      <svg viewBox="0 0 120 120" class="ring-svg">
+        <circle cx="60" cy="60" r="50" class="ring-bg" />
+        <circle cx="60" cy="60" r="50" class="ring-fill"
+          stroke-dasharray="{{ (report.overall_score / 100) * 314.16 }} 314.16"
+          stroke-dashoffset="0"
+        />
+      </svg>
+      <div class="ring-label">
+        <span class="ring-value">{{ "%.0f"|format(report.overall_score) }}</span>
+        <span class="ring-unit">/ 100</span>
+      </div>
+    </div>
+    <div class="score-breakdown-list">
+      <div class="score-row">
+        <span>Keyword Match</span>
+        <div class="score-bar-wrap">
+          <div class="score-bar-fill" style="width:{{ report.keyword_score }}%"></div>
+        </div>
+        <span class="score-pct">{{ "%.1f"|format(report.keyword_score) }}%</span>
+      </div>
+      <div class="score-row">
+        <span>Skill Relevance</span>
+        <div class="score-bar-wrap">
+          <div class="score-bar-fill" style="width:{{ report.skill_score }}%"></div>
+        </div>
+        <span class="score-pct">{{ "%.1f"|format(report.skill_score) }}%</span>
+      </div>
+      <div class="score-row">
+        <span>TF-IDF Similarity</span>
+        <div class="score-bar-wrap">
+          <div class="score-bar-fill" style="width:{{ report.tfidf_score }}%"></div>
+        </div>
+        <span class="score-pct">{{ "%.1f"|format(report.tfidf_score) }}%</span>
+      </div>
+      <div class="score-row">
+        <span>ATS Compatibility</span>
+        <div class="score-bar-wrap">
+          <div class="score-bar-fill" style="width:{{ report.ats_score }}%"></div>
+        </div>
+        <span class="score-pct">{{ "%.1f"|format(report.ats_score) }}%</span>
+      </div>
+    </div>
+    <div class="recommendation-box recommendation-{{ report.recommendation | lower | replace(' ', '-') }}">
+      {{ report.recommendation }}
+    </div>
+  </div>
+
+  <!-- Matched Skills -->
+  <div class="report-card">
+    <h2>&#9989; Matched Skills <span class="count-badge">{{ report.matched_skills | length }}</span></h2>
+    {% if report.matched_skills %}
+      <div class="tag-cloud">
+        {% for skill in report.matched_skills %}
+          <span class="tag tag-matched">{{ skill }}</span>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-msg">No matched skills found.</p>
+    {% endif %}
+  </div>
+
+  <!-- Missing Skills -->
+  <div class="report-card">
+    <h2>&#10060; Missing Skills <span class="count-badge count-red">{{ report.missing_skills | length }}</span></h2>
+    {% if report.missing_skills %}
+      <div class="tag-cloud">
+        {% for skill in report.missing_skills %}
+          <span class="tag tag-missing">{{ skill }}</span>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-msg success-msg">All required skills found!</p>
+    {% endif %}
+  </div>
+
+  <!-- Keyword Analysis -->
+  <div class="report-card">
+    <h2>&#128270; Keyword Analysis</h2>
+    <div class="keyword-section">
+      <h3 class="keyword-heading matched-heading">Matched Keywords ({{ report.matched_keywords | length }})</h3>
+      <div class="tag-cloud">
+        {% for kw in report.matched_keywords %}
+          <span class="tag tag-matched">{{ kw }}</span>
+        {% endfor %}
+        {% if not report.matched_keywords %}
+          <span class="empty-msg">None found.</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="keyword-section" style="margin-top:1rem;">
+      <h3 class="keyword-heading missing-heading">Missing Keywords ({{ report.missing_keywords | length }})</h3>
+      <div class="tag-cloud">
+        {% for kw in report.missing_keywords %}
+          <span class="tag tag-missing">{{ kw }}</span>
+        {% endfor %}
+        {% if not report.missing_keywords %}
+          <span class="empty-msg">None missing.</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Strengths -->
+  <div class="report-card">
+    <h2>&#11088; Strengths</h2>
+    <ul class="insight-list">
+      {% for strength in report.strengths %}
+        <li class="insight-item insight-positive">{{ strength }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Improvement Suggestions -->
+  <div class="report-card">
+    <h2>&#128161; Areas for Improvement</h2>
+    <ul class="insight-list">
+      {% for suggestion in report.suggestions %}
+        <li class="insight-item insight-warning">{{ suggestion }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+</div>
+
+<div class="report-actions">
+  <a href="{{ url_for('results') }}" class="btn btn-outline">&larr; Back to Results</a>
+  <a href="{{ url_for('upload') }}" class="btn btn-primary">&#43; New Analysis</a>
+</div>
+{% endblock %}

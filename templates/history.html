@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}History &mdash; Resume Screening Assistant{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Screening History</h1>
+  <p>All previously screened candidates stored in the database.</p>
+  {% if candidates %}
+  <form action="{{ url_for('clear_history') }}" method="POST" style="display:inline;"
+        onsubmit="return confirm('Clear all history? This cannot be undone.');">
+    <button type="submit" class="btn btn-danger">&#128465; Clear All History</button>
+  </form>
+  {% endif %}
+</div>
+
+{% if candidates %}
+<div class="table-container">
+  <table class="results-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Candidate</th>
+        <th>Overall Score</th>
+        <th>Keyword</th>
+        <th>Skill</th>
+        <th>ATS</th>
+        <th>Recommendation</th>
+        <th>Date</th>
+        <th>Report</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in candidates %}
+      <tr>
+        <td>{{ c.id }}</td>
+        <td class="candidate-name">{{ c.filename }}</td>
+        <td><span class="overall-score">{{ "%.1f"|format(c.overall_score) }}%</span></td>
+        <td>{{ "%.1f"|format(c.keyword_score) }}%</td>
+        <td>{{ "%.1f"|format(c.skill_score) }}%</td>
+        <td>{{ "%.1f"|format(c.ats_score) }}%</td>
+        <td>
+          <span class="badge badge-{{ c.recommendation | lower | replace(' ', '-') }}">
+            {{ c.recommendation }}
+          </span>
+        </td>
+        <td class="date-cell">{{ c.created_at[:16] }}</td>
+        <td>
+          <a href="{{ url_for('report', candidate_id=c.id) }}" class="btn btn-sm btn-primary">
+            View
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">&#128203;</div>
+  <h2>No History Found</h2>
+  <p>No candidates have been screened yet. Start by uploading resumes.</p>
+  <a href="{{ url_for('upload') }}" class="btn btn-primary">Upload Resumes</a>
+</div>
+{% endif %}
+{% endblock %}

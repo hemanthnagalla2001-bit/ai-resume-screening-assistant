@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Home &mdash; Resume Screening Assistant{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Intelligent Resume Screening</h1>
+    <p class="hero-subtitle">
+      Evaluate resumes against job descriptions instantly. Score candidates,
+      rank them, identify skill gaps, and generate ATS compatibility reports —
+      all in one place.
+    </p>
+    <div class="hero-actions">
+      <a href="{{ url_for('upload') }}" class="btn btn-primary btn-lg">Start Screening</a>
+      <a href="{{ url_for('history') }}" class="btn btn-outline btn-lg">View History</a>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <h2 class="section-title">How It Works</h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">&#128196;</div>
+      <h3>Upload Resumes</h3>
+      <p>Upload one or multiple resumes in PDF, DOCX, or TXT format for instant analysis.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128221;</div>
+      <h3>Add Job Description</h3>
+      <p>Paste the job description and let the system extract key skills and requirements automatically.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#9989;</div>
+      <h3>Automated Scoring</h3>
+      <p>Each resume is scored across keyword match, skill relevance, TF-IDF similarity, and ATS compatibility.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#127941;</div>
+      <h3>Rank Candidates</h3>
+      <p>Candidates are ranked from strongest to weakest match with a clear recommendation label.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128202;</div>
+      <h3>ATS Report</h3>
+      <p>Get a per-candidate ATS compatibility report with formatting suggestions and keyword analysis.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128270;</div>
+      <h3>Skill-Gap Analysis</h3>
+      <p>See exactly which skills are matched and which are missing to make informed hiring decisions.</p>
+    </div>
+  </div>
+</section>
+
+<section class="scoring-overview">
+  <h2 class="section-title">Scoring Methodology</h2>
+  <div class="score-breakdown">
+    <div class="score-item">
+      <div class="score-label">Keyword Match</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar" style="width: 30%;">30%</div>
+      </div>
+    </div>
+    <div class="score-item">
+      <div class="score-label">Skill Relevance</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar" style="width: 30%;">30%</div>
+      </div>
+    </div>
+    <div class="score-item">
+      <div class="score-label">TF-IDF Similarity</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar" style="width: 25%;">25%</div>
+      </div>
+    </div>
+    <div class="score-item">
+      <div class="score-label">ATS Compatibility</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar" style="width: 15%;">15%</div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
